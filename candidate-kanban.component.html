@@ -1,0 +1,41 @@
+<div class="kanban-wrap" *ngIf="candidates">
+  <ul class="kanban" [draggable]="true" (dragstart)="dragStartMove($event)" (drag)="dragMove($event)"
+      (dragend)="finishMove()">
+    <li class="kanban__item" *ngFor="let type of typeStatus" (dragover)="dragOverWrap($event)"
+        (dragleave)="dragLeaveWrap($event)" (drop)="dropWrap($event)">
+      <p class="kanban__header">{{type}} - {{(candidates | filterByField: {statusInSchemes: type}).length }}</p>
+      <ul class="candidate cards" [attr.data-type]="type">
+        <li [class]="dragItem === candidate.id ? 'drag' : ''"
+            *ngFor="let candidate of candidates | filterByField: { statusInSchemes: type}"
+            (dragover)="dragOver($event)"
+            (dragleave)="dragLeave($event)"
+            (drop)="drop($event)"
+            (dragstart)="$event.stopPropagation()"
+            [attr.data-type]="candidate.statusInSchemes">
+          <div class="candidate-wrap" [draggable]="true" (dragstart)="dragStart($event, candidate.id)"
+               (dragend)="dragEnd()">
+            <div class="candidate__item">
+              <div class="candidate__header">
+                <div class="candidate__wrap-img">
+                  <img *ngIf="candidate.url_image" [src]="candidate.url_image  | safe: 'resourceUrl'" class="candidate__img">
+                </div>
+                <span class="candidate__name list-user__data-name">{{candidate.name}}</span>
+              </div>
+              <span class="candidate__data candidate__data-inter" *ngIf="candidate.dateOfInterview">
+                Data of interview: {{candidate.dateOfInterview | date}}
+              </span>
+              <div class="button-send">
+                <button class="button-send__but" (click)="detailCandidate(candidate)">
+                  <i class="ion ion-ios-eye"></i>
+                </button>
+                <button class="button-send__but">
+                  <i class="ion ion-ios-mail-outline"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
